@@ -1,4 +1,10 @@
-import pyautogui
+try:
+    import pyautogui
+    PYAUTOGUI_AVAILABLE = True
+except ImportError:
+    PYAUTOGUI_AVAILABLE = False
+    print("⚠️  PyAutoGUI not available (headless server mode)")
+
 import subprocess
 import time
 import os
@@ -7,7 +13,10 @@ from typing import Dict, Any
 class AutomationTools:
     def __init__(self):
         # Fail-safe: Move mouse to corner to abort
-        pyautogui.FAILSAFE = True
+        if PYAUTOGUI_AVAILABLE:
+            pyautogui.FAILSAFE = True
+        else:
+            print("⚠️  GUI automation disabled on headless server")
         
     def execute(self, tool_name: str, params: str) -> str:
         """Execute automation tools"""
@@ -56,7 +65,10 @@ class AutomationTools:
                 return f"Launched {app_name}"
             
         except Exception as e:
-            # Fallback: Use Start Menu search
+            # Fallback: Use Start Menu search (only if GUI available)
+            if not PYAUTOGUI_AVAILABLE:
+                return f"Cannot launch {app_name}: GUI automation not available on headless server"
+            
             print(f"Direct launch failed: {e}. Trying Start Menu...")
             pyautogui.press('win')
             time.sleep(1)
@@ -67,15 +79,21 @@ class AutomationTools:
 
     def type_text(self, text: str) -> str:
         """Type text at current cursor position"""
+        if not PYAUTOGUI_AVAILABLE:
+            return "GUI automation not available on headless server"
         pyautogui.write(text, interval=0.05)
         return f"Typed: {text}"
 
     def press_key(self, key: str) -> str:
         """Press a specific key"""
+        if not PYAUTOGUI_AVAILABLE:
+            return "GUI automation not available on headless server"
         pyautogui.press(key)
         return f"Pressed {key}"
 
     def click(self) -> str:
         """Click current mouse position"""
+        if not PYAUTOGUI_AVAILABLE:
+            return "GUI automation not available on headless server"
         pyautogui.click()
         return "Clicked mouse"
