@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 
-const API_BASE = 'http://localhost:8001';
+const API_BASE = '/api';
 
 interface Message {
     role: 'user' | 'assistant';
