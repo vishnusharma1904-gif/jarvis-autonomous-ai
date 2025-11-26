@@ -1,5 +1,11 @@
 import smtplib
-import pywhatkit
+try:
+    import pywhatkit
+    PYWHATKIT_AVAILABLE = True
+except ImportError:
+    PYWHATKIT_AVAILABLE = False
+    print("⚠️  PyWhatKit not available (headless server mode)")
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
@@ -54,6 +60,9 @@ class CommunicationTools:
             return f"Failed to send email: {str(e)}"
 
     def send_whatsapp(self, phone_no: str, message: str) -> str:
+        if not PYWHATKIT_AVAILABLE:
+            return "WhatsApp messaging not available on headless server (PyWhatKit requires GUI)"
+        
         try:
             # Run in separate thread to not block
             def send():
