@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🤖 Autonomous Jarvis AI
 
 **A fully autonomous AI assistant powered by local LLMs, designed to replace cloud-based APIs like Gemini and ChatGPT.**
@@ -300,3 +301,6 @@ This is an educational project. Code execution and web access features should be
 [![Star on GitHub](https://img.shields.io/github/stars/yourusername/jarvis-autonomous?style=social)](https://github.com/yourusername/jarvis-autonomous)
 
 </div>
+=======
+# jarvis-autonomous-ai
+>>>>>>> 6333bb2c89a9c6b852016769db3c817e13fd9ebb
