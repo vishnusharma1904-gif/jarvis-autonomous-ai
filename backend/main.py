@@ -21,6 +21,8 @@ from core.rag import rag_system
 from core.document_processor import process_document
 from core.voice_local import speak, listen
 from core.tools.web_search import get_current_time
+from core.image_gen import image_gen
+from core.video_gen import video_gen
 
 app = FastAPI(
     title="Autonomous Jarvis AI",
@@ -53,7 +55,11 @@ async def root():
             "Web Search",
             "Code Execution",
             "RAG System",
-            "Voice Features"
+            "Code Execution",
+            "RAG System",
+            "Voice Features",
+            "Image Generation (Gemini 2.5)",
+            "Video Generation (Veo)"
         ]
     }
 
@@ -214,6 +220,39 @@ Be helpful, concise, and accurate."""
         "session_id": session_id,
         "audio_url": audio_url
     }
+
+# ==================== Media Generation ====================
+
+@app.post("/generate-image")
+async def generate_image_endpoint(
+    prompt: str = Form(...),
+    width: int = Form(1024),
+    height: int = Form(1024),
+    seed: int = Form(None),
+    model: str = Form("gemini-2.5-flash-image"),
+    enhance: bool = Form(True)
+):
+    """Generate image using Gemini 2.5 Flash Image"""
+    image_url = image_gen.generate(prompt, width=width, height=height, seed=seed, model=model, enhance=enhance)
+    return {"image_url": image_url}
+
+@app.post("/generate-video")
+async def generate_video_endpoint(
+    prompt: str = Form(...),
+    duration: int = Form(8),
+    aspect_ratio: str = Form("16:9"),
+    reference_image: Optional[UploadFile] = File(None)
+):
+    """Generate video using Google Veo"""
+    ref_image_bytes = await reference_image.read() if reference_image else None
+    result = video_gen.generate(prompt, duration=duration, aspect_ratio=aspect_ratio, reference_image=ref_image_bytes)
+    return result
+
+@app.get("/check-video-status/{operation_id}")
+async def check_video_status(operation_id: str):
+    """Check video generation status"""
+    result = video_gen.check_status(operation_id)
+    return result
 
 # ==================== Agent Endpoints ====================
 
